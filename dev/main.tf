@@ -3,19 +3,15 @@ provider "aws" {
   profile = "${var.aws_credentials_profile}"
 }
 
+/*--------------------------------------------*/
+/*-- Terraform State Backend Configurations --*/
+/*--------------------------------------------*/
+
 terraform {
   backend "s3" {
-    bucket = "beestock-terraform-states"
+    bucket = "beestock-terraform"
     key = "dev/terraform.tfstate"
-    region = "us-east-2"
+    region = "us-west-2"
     encrypt = true
   }
 }
-
-/* ECS Cluster */
-resource "aws_ecs_cluster" "dev_beestock" {
-  name = "${var.ecs_cluster_name}"
-}
-
-
-data "aws_availability_zones" "all" {}

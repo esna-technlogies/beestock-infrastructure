@@ -1,6 +1,6 @@
-/*-----------------------*/
-/*-- ECS Configuration --*/
-/*-----------------------*/
+/*------------------------*/
+/*-- ECS Configurations --*/
+/*------------------------*/
 
 /* Task Definition */
 data "aws_ecs_task_definition" "dev_webapp" {
@@ -60,53 +60,10 @@ resource "aws_ecr_repository" "dev_webapp" {
   name = "dev-beestock-webapp"
 }
 
-/*-----------------------*/
-/*-- EC2 Configuration --*/
-/*-----------------------*/
 
-/* Launch Configuration */
-resource "aws_launch_configuration" "dev_webapp" {
-  name_prefix = "dev-webapp- "
-  image_id = "ami-1b90a67e"
-  instance_type = "t2.micro"
-  security_groups = ["${aws_security_group.dev_webapp.id}"]
-  iam_instance_profile = "${aws_iam_instance_profile.instance_profile.name}"
-
-  associate_public_ip_address = true
-
-  user_data = <<-EOF
-    #!/bin/bash
-    echo ECS_CLUSTER=${var.ecs_cluster_name} >> /etc/ecs/ecs.config
-    EOF
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-/* Auto Scalling Group */
-resource "aws_autoscaling_group" "dev_webapp" {
-  launch_configuration = "${aws_launch_configuration.dev_webapp.id}"
-  vpc_zone_identifier = [
-    "${aws_subnet.dev_beestock_sn0.id}"
-  ]
-
-  max_size = 1
-  min_size = 1
-  health_check_type = "ELB"
-
-  load_balancers = ["${aws_elb.dev_webapp.id}"]
-
-  tag {
-    key = "Name"
-    propagate_at_launch = true
-    value = "frontend-webapp"
-  }
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
+/*------------------------*/
+/*-- EC2 Configurations --*/
+/*------------------------*/
 
 /* ELB */
 resource "aws_elb" "dev_webapp" {
@@ -164,41 +121,13 @@ resource "aws_security_group" "dev_webapp_elb" {
   }
 }
 
-resource "aws_security_group" "dev_webapp" {
-  name = "dev-beestock-webapp"
-  description = "SG - Beestock WebApp - Dev Environment"
-  vpc_id = "${aws_vpc.dev_beestock.id}"
-
-  ingress {
-    from_port = 8080
-    protocol = "tcp"
-    to_port = 8080
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port = 0
-    protocol = "-1"
-    to_port = 0
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags {
-    Name = "dev-beestock-webapp"
-  }
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-/*---------------------------*/
-/*-- Route53 Configuration --*/
-/*---------------------------*/
+/*----------------------------*/
+/*-- Route53 Configurations --*/
+/*----------------------------*/
 
 /* Route 53 */
 resource "aws_route53_record" "dev_webapp" {
-  name = "dev-webapp.beesstock.com"
+  name = "dev.beesstock.com"
   type = "A"
   zone_id = "Z350L91LBYS5QI"
 

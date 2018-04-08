@@ -2,22 +2,22 @@
 variable "aws_account_id" {}
 
 variable "aws_region" {
-  default = "us-east-2"
+  default = "us-west-2"
 }
 
-variable "availability_zone_a" {
-  default = "us-east-2a"
-}
-variable "availability_zone_b" {
-  default = "us-east-2b"
-}
+//variable "availability_zone_a" {
+//  default = "us-east-2a"
+//}
+//variable "availability_zone_b" {
+//  default = "us-east-2b"
+//}
 
 variable "aws_credentials_profile" {
   default = "devops"
 }
 
 variable "s3_bucket_of_terraform_states" {
-  default = "beestock-terraform-states"
+  default = "beestock-terraform"
 }
 
 variable "s3_bucket_key_of_terraform_state_of_development" {

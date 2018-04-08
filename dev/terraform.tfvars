@@ -23,9 +23,9 @@ terragrunt = {
   remote_state {
     backend = "s3"
     config {
-      bucket          = "beestock-terraform-states"
+      bucket          = "beestock-terraform"
       key             = "dev/terraform.tfstate"
-      region          = "us-east-2"
+      region          = "us-west-2"
       encrypt         = true
       dynamodb_table  = "terraform-state-development-lock"
       profile         = "devops"
